@@ -244,7 +244,7 @@ function parseJUnitXML () {
   return failedTests;
 }
 
-function rerunFailedTest (specDir, testName, testInfo) {
+async function rerunFailedTest (specDir, testName, testInfo) {
   console.log('\n========================================');
   console.log(`Rerunning failed test: ${testInfo.fullName}`);
   if (testInfo.file) {
@@ -262,7 +262,7 @@ function rerunFailedTest (specDir, testName, testInfo) {
     args.push(`--files ${testInfo.file}`);
   }
 
-  const success = runTestUsingElectron(specDir, testName, false, args);
+  const success = await runTestUsingElectron(specDir, testName, false, args);
 
   if (success) {
     console.log(`✅ Test passed: ${testInfo.fullName}`);
@@ -298,7 +298,7 @@ async function rerunFailedTests (specDir, testName) {
   };
 
   failedTests.forEach(async (testInfo, index) => {
-    const success = rerunFailedTest(specDir, testName, testInfo);
+    const success = await rerunFailedTest(specDir, testName, testInfo);
     if (success) {
       results.passed++;
     } else {
@@ -339,6 +339,7 @@ async function runTestUsingElectron (specDir, testName, shouldRerun, additionalA
     runnerArgs.unshift(path.resolve(__dirname, 'dbus_mock.py'), exe);
     exe = 'python3';
   }
+  console.log(`Running: ${exe} ${runnerArgs.join(' ')}`);
   const { status, signal } = await asyncSpawn(exe, runnerArgs);
   if (status !== 0) {
     if (status) {
@@ -348,7 +349,7 @@ async function runTestUsingElectron (specDir, testName, shouldRerun, additionalA
       console.log(`${fail} Electron tests failed with kill signal ${signal}.`);
     }
     if (shouldRerun) {
-      rerunFailedTests(specDir, testName);
+      await rerunFailedTests(specDir, testName);
     } else {
       return false;
     }
