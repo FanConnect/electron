@@ -297,7 +297,8 @@ async function rerunFailedTests (specDir, testName) {
     failed: 0
   };
 
-  failedTests.forEach(async (testInfo, index) => {
+  let index = 0;
+  for (const testInfo of failedTests) {
     const success = await rerunFailedTest(specDir, testName, testInfo);
     if (success) {
       results.passed++;
@@ -310,7 +311,8 @@ async function rerunFailedTests (specDir, testName) {
       console.log('\nWaiting 2 seconds before next test...');
       await new Promise(resolve => setTimeout(resolve, 2000));
     }
-  });
+    index++;
+  };
 
   // Step 4: Summary
   console.log('\n📈 Summary:');
@@ -334,7 +336,11 @@ async function runTestUsingElectron (specDir, testName, shouldRerun, additionalA
   } else {
     exe = path.resolve(BASE, utils.getElectronExec());
   }
-  const runnerArgs = [`electron/${specDir}`, ...unknownArgs.slice(2), ...additionalArgs];
+  let argsToPass = unknownArgs.slice(2);
+  if (additionalArgs.includes('--files')) {
+    argsToPass = argsToPass.filter(arg => (!arg.startsWith('--files') || arg.indexOf('spec/') > -1));
+  }
+  const runnerArgs = [`electron/${specDir}`, ...argsToPass, ...additionalArgs];
   if (process.platform === 'linux') {
     runnerArgs.unshift(path.resolve(__dirname, 'dbus_mock.py'), exe);
     exe = 'python3';
