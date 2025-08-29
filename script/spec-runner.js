@@ -259,7 +259,7 @@ async function rerunFailedTest (specDir, testName, testInfo) {
 
   const args = [`--grep "${grepPattern}"`];
   if (testInfo.file) {
-    args.push(`--files ${testInfo.file}`);
+    args.push('--files', testInfo.file);
   }
 
   const success = await runTestUsingElectron(specDir, testName, false, args);
