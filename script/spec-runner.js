@@ -338,7 +338,7 @@ async function runTestUsingElectron (specDir, testName, shouldRerun, additionalA
   }
   let argsToPass = unknownArgs.slice(2);
   if (additionalArgs.includes('--files')) {
-    argsToPass = argsToPass.filter(arg => (!arg.startsWith('--files') && !arg.startsWith('spec/')));
+    argsToPass = argsToPass.filter(arg => (arg.indexOf('--files') === -1 && arg.indexOf('spec/') === -1));
   }
   const runnerArgs = [`electron/${specDir}`, ...argsToPass, ...additionalArgs];
   if (process.platform === 'linux') {
