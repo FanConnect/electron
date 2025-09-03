@@ -2,7 +2,7 @@ gclient_gn_args_from = 'src'
 
 vars = {
   'chromium_version':
-    '130.0.6723.191',
+    'refs/heads/130.0.6723.99-patched',
   'node_version':
     'v20.18.3',
   'nan_version':
@@ -19,7 +19,7 @@ vars = {
   'pyyaml_version': '3.12',
 
   'chromium_git': 'https://chromium.googlesource.com',
-  'electron_git': 'https://github.com/electron',
+  'electron_git': 'https://github.com/FanConnect',
   'nodejs_git': 'https://github.com/nodejs',
   'yaml_git': 'https://github.com/yaml',
   'squirrel_git': 'https://github.com/Squirrel',
@@ -82,7 +82,7 @@ vars = {
 
 deps = {
   'src': {
-    'url': (Var("chromium_git")) + '/chromium/src.git@' + (Var("chromium_version")),
+    'url': 'https://github.com/FanConnect/chromium.git@' + Var('chromium_version'),
     'condition': 'checkout_chromium and process_deps',
   },
   'src/third_party/nan': {
